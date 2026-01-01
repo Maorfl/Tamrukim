@@ -8,7 +8,7 @@ interface LicenseCardProps {
 }
 
 const LicenseCard: React.FC<LicenseCardProps> = ({ license }) => {
-    const description = createDescription(license.notificationNumber!, license.productName);
+    const description = createDescription(license.notificationNumber!);
     const pdfUrl = licenseAPI.downloadPDF(license.licenseNumber!);
 
     const handleDownload = () => {
@@ -21,27 +21,27 @@ const LicenseCard: React.FC<LicenseCardProps> = ({ license }) => {
                 {/* Header with formatted description */}
                 <div className="mb-4 pb-4 border-b border-gray-200">
                     <h3 className="text-xl font-bold text-gray-800 font-hebrew" dir="rtl">
-                        {description}
+                        {license.licenseNumber}
                     </h3>
                 </div>
 
                 {/* License details */}
                 <div className="space-y-3 mb-6" dir="rtl">
-                    <div className="flex items-start gap-3">
+                    {/* <div className="flex items-start gap-3">
                         <span className="text-sm font-semibold text-primary-700 min-w-[120px] font-hebrew">
                             מספר רישיון:
                         </span>
                         <span className="text-sm text-gray-700 font-mono bg-gray-100 px-3 py-1 rounded-lg">
-                            {license.notificationNumber || license.licenseNumber}
+                            {description}
                         </span>
-                    </div>
+                    </div> */}
 
                     <div className="flex items-start gap-3">
                         <span className="text-sm font-semibold text-primary-700 min-w-[120px] font-hebrew">
-                            מספר הודעה:
+                            מספר רישיון\נוטיפיקציה:
                         </span>
                         <span className="text-sm text-gray-700 font-mono bg-gray-100 px-3 py-1 rounded-lg">
-                            {license.notificationNumber}
+                            {description}
                         </span>
                     </div>
 

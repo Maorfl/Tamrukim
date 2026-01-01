@@ -20,10 +20,10 @@ const PDF_DIR = path.join(__dirname, '../../uploads'); // Scanning the uploads f
 // Note: Hebrew in PDFs can sometimes be reversed (Visual vs Logical). 
 // These regexes attempt to catch standard "Key: Value" patterns.
 const PATTERNS = {
-    notification: /(?:מספר נוטיפיקציה|Notification Number|רישיון מספר|מספר רישיון)[:\s]+([\d\/]+)/i,
-    productName: /(?:שם התמרוק|Product Name)[:\s]+(.+)/i,
-    manufacturer: /(?:שם המפעל|Manufacturer|יצרן)[:\s]+(.+)/i,
-    country: /(?:ארץ ייצור|Country of Origin|ארץ)[:\s]+(.+)/i,
+    notification: /(\d{1}\/\d{6}\/\d{2}|\d{13,14})/g,
+    productName: /(?:שם התמרוק בעברית|Product Name|תירבעב קורמתה םש)[:\s]+(.+)/i,
+    manufacturer: /(?:הערות כתובת|תבותכ תורעה|כתובתו|ותבותכ)[:\s]+(.+)/i,
+    country: /(?:שם המפעל המייצר|שם יצרן בחו"ל|םש לעפמה רציימה|םש ןרצי ל"וחב)[:\s]+(.+)/i,
     // Sometimes Hebrew is reversed in PDFs (e.g., "קורמתה םש")
     productNameRev: /(?:קורמתה םש)[:\s]+(.+)/i,
     countryRev: /(?:רוציי ץרא)[:\s]+(.+)/i
@@ -84,6 +84,7 @@ async function importPdfs() {
             const data = await parser.getText();
             const text = data.text;
 
+
             // 3. Extract Fields using Regex
             const notificationMatch = text.match(PATTERNS.notification);
             const productMatch = text.match(PATTERNS.productName) || text.match(PATTERNS.productNameRev);
@@ -93,7 +94,7 @@ async function importPdfs() {
             // 4. Prepare Metadata (Fallback to "Unknown" if not found)
             const metadata = {
                 licenseNumber: licenseNumber,
-                notificationNumber: notificationMatch ? cleanText(notificationMatch[1]) : licenseNumber, // Fallback to ID if not found
+                notificationNumber: notificationMatch ? cleanText(notificationMatch[1]) : "שגיאה", // Fallback to ID if not found
                 productName: productMatch ? cleanText(productMatch[1]) : "Unknown Product",
                 manufacturer: manufacturerMatch ? cleanText(manufacturerMatch[1]) : "Unknown Manufacturer",
                 country: countryMatch ? cleanText(countryMatch[1]) : "Unknown Country"

@@ -23,9 +23,9 @@ export const formatLicenseId = (notificationNumber: string): string => {
 
 /**
  * Creates the description string for display
- * Format: "FormattedID - ProductName"
+ * Format: "FormattedID
  */
-export const createDescription = (notificationNumber: string, productName: string): string => {
+export const createDescription = (notificationNumber: string): string => {
     const formattedId = formatLicenseId(notificationNumber);
-    return `${formattedId} - ${productName}`;
+    return `${formattedId}`;
 };
