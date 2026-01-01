@@ -20,8 +20,9 @@ const PDF_DIR = path.join(__dirname, '../../uploads'); // Scanning the uploads f
 // Note: Hebrew in PDFs can sometimes be reversed (Visual vs Logical). 
 // These regexes attempt to catch standard "Key: Value" patterns.
 const PATTERNS = {
-    notification: /(\d{1}\/\d{6}\/\d{2}|\d{13,14})/g,
-    productName: /(?:שם התמרוק בעברית|Product Name|תירבעב קורמתה םש)[:\s]+(.+)/i,
+    number: /\d{1,2}\/\d{6}\/\d{1,2}/g,
+    notification: /\d{13,14}/g,
+    productName: /(?:שם התמרוק בעברית|Product Name|תירבעב קורמתה םש|םש קורמתה תירבעב)[:\s]+(.+)/i,
     manufacturer: /(?:הערות כתובת|תבותכ תורעה|כתובתו|ותבותכ)[:\s]+(.+)/i,
     country: /(?:שם המפעל המייצר|שם יצרן בחו"ל|םש לעפמה רציימה|םש ןרצי ל"וחב)[:\s]+(.+)/i,
     // Sometimes Hebrew is reversed in PDFs (e.g., "קורמתה םש")
@@ -86,6 +87,7 @@ async function importPdfs() {
 
 
             // 3. Extract Fields using Regex
+            const numberMatch = text.match(PATTERNS.number);
             const notificationMatch = text.match(PATTERNS.notification);
             const productMatch = text.match(PATTERNS.productName) || text.match(PATTERNS.productNameRev);
             const manufacturerMatch = text.match(PATTERNS.manufacturer);
@@ -94,7 +96,8 @@ async function importPdfs() {
             // 4. Prepare Metadata (Fallback to "Unknown" if not found)
             const metadata = {
                 licenseNumber: licenseNumber,
-                notificationNumber: notificationMatch ? cleanText(notificationMatch[1]) : "שגיאה", // Fallback to ID if not found
+                number: numberMatch ? cleanText(numberMatch[1]) : "",
+                notificationNumber: notificationMatch ? cleanText(notificationMatch[1]) : "", // Fallback to ID if not found
                 productName: productMatch ? cleanText(productMatch[1]) : "Unknown Product",
                 manufacturer: manufacturerMatch ? cleanText(manufacturerMatch[1]) : "Unknown Manufacturer",
                 country: countryMatch ? cleanText(countryMatch[1]) : "Unknown Country"
@@ -122,6 +125,7 @@ async function importPdfs() {
 }
 
 function cleanText(text: string): string {
+    if (!text) return "";
     return text.trim().replace(/\r?\n|\r/g, " ").replace(/\s+/g, " ");
 }
 

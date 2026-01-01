@@ -8,7 +8,8 @@ interface LicenseCardProps {
 }
 
 const LicenseCard: React.FC<LicenseCardProps> = ({ license }) => {
-    const description = createDescription(license.notificationNumber!);
+    const licenseNumberOrNotification = license.number ? license.number : license.notificationNumber;
+    const description = createDescription(licenseNumberOrNotification!);
     const pdfUrl = licenseAPI.downloadPDF(license.licenseNumber!);
 
     const handleDownload = () => {

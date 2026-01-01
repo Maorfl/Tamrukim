@@ -1,6 +1,7 @@
 export interface License {
     _id: string;
     licenseNumber?: string;
+    number?: string;
     notificationNumber?: string;
     productName: string;
     country: string;

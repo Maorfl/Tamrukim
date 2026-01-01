@@ -2,6 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface ILicense extends Document {
     licenseNumber?: string;
+    number?: string;
     notificationNumber?: string;
     productName: string;
     country: string;
@@ -22,10 +23,13 @@ const LicenseSchema: Schema = new Schema(
                 message: 'License number must be exactly 8 digits'
             }
         },
+        number: {
+            type: String,
+            required: false,
+        },
         notificationNumber: {
             type: String,
-            required: true,
-            trim: true
+            required: false,
         },
         productName: {
             type: String,
